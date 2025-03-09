@@ -1,0 +1,49 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.coursemanagementsystem;
+
+/**
+ *
+ * @author Dharsha
+ */
+import java.sql.*;
+import java.util.Scanner;
+
+public class CourseManagementSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        CourseManager courseManager = new CourseManager();
+        StudentManager studentManager = new StudentManager();
+        RegistrationManager registrationManager = new RegistrationManager();
+
+        while (true) {
+            System.out.println("\n1. List Courses");
+            System.out.println("2. Register Student");
+            System.out.println("3. Enroll in Course");
+            System.out.println("4. Drop Course");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1: 
+                    courseManager.listCourses();
+                case 2:
+                    studentManager.registerStudent(scanner);
+                case 3:
+                    registrationManager.enrollInCourse(scanner);
+                case 4:
+                    registrationManager.dropCourse(scanner);
+                case 5: {
+                    System.out.println("Exiting...");
+                    return;
+                }
+                default:
+                    System.out.println("Invalid choice! Try again.");
+            }
+        }
+    }
+}
