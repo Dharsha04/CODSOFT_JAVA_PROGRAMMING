@@ -1,0 +1,76 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.coursemanagementsystem;
+
+/**
+ *
+ * @author Dharsha
+ */
+import java.sql.*;
+import java.util.Scanner;
+
+class RegistrationManager {
+    private static final String URL = "jdbc:mysql://localhost:3306/CourseDB";
+    private static final String USER = "root";
+    private static final String PASSWORD = "Dharsha@2004";
+
+    public void enrollInCourse(Scanner scanner) {
+        System.out.print("Enter Student ID: ");
+        int studentId = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter Course Code: ");
+        String courseCode = scanner.nextLine();
+
+        String sql = "INSERT INTO Registration (student_id, course_code) VALUES (?, ?)";
+        String updateSql = "UPDATE Course SET available_slots = available_slots - 1 WHERE course_code = ? AND available_slots > 0";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+            updateStmt.setString(1, courseCode);
+            int rowsUpdated = updateStmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                pstmt.setInt(1, studentId);
+                pstmt.setString(2, courseCode);
+                pstmt.executeUpdate();
+                System.out.println("Successfully enrolled!");
+            } else {
+                System.out.println("Course is full or doesn't exist.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dropCourse(Scanner scanner) {
+        System.out.print("Enter Student ID: ");
+        int studentId = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter Course Code: ");
+        String courseCode = scanner.nextLine();
+
+        String sql = "DELETE FROM Registration WHERE student_id = ? AND course_code = ?";
+        String updateSql = "UPDATE Course SET available_slots = available_slots + 1 WHERE course_code = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+            pstmt.setInt(1, studentId);
+            pstmt.setString(2, courseCode);
+            int rowsDeleted = pstmt.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                updateStmt.setString(1, courseCode);
+                updateStmt.executeUpdate();
+                System.out.println("Successfully dropped the course.");
+            } else {
+                System.out.println("No such registration found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
