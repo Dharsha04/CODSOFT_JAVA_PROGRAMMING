@@ -1,0 +1,31 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.coursemanagementsystem;
+
+/**
+ *
+ * @author Dharsha
+ */
+import java.sql.*;
+import java.util.Scanner;
+
+class CourseManager {
+    private static final String URL = "jdbc:mysql://localhost:3306/CourseDB";
+    private static final String USER = "root";
+    private static final String PASSWORD = "Dharsha@2004";
+
+    public void listCourses() {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM Course")) {
+            System.out.println("\nAvailable Courses:");
+            while (rs.next()) {
+                System.out.printf("%s - %s (%d slots left)\n", rs.getString("course_code"), rs.getString("title"), rs.getInt("available_slots"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
